@@ -1,0 +1,42 @@
+{
+  "name": "facebook-link-cleaner",
+  "author": "ValTM",
+  "version": "1.0.0",
+  "description": "Facebook link cleaner",
+  "repository": "null",
+  "readme": "readme.md",
+  "license": "MIT",
+  "scripts": {
+    "babel": "babel src -d dist",
+    "uglify": "npm run babel && uglifyjs dist/source.js -c -m -o dist/source.min.js && rm dist/source.js",
+    "jslet": "npm run uglify && rm -f dist/javascriptlet.min.js && printf \"javascript:(()=>{\" >> dist/javascriptlet.min.js && cat dist/source.min.js | tr '\\n' ' ' >> dist/javascriptlet.min.js && printf \"})();\" >> dist/javascriptlet.min.js && rm dist/source.min.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-react": "^7.13.0",
+    "uglify-js": "^3.5.15"
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module"
+    },
+    "env": {
+      "browser": true,
+      "es6": true
+    },
+    "extends": "airbnb",
+    "rules": {
+      "no-console": "off"
+    }
+  },
+  "babel": {
+    "presets": "env"
+  }
+}
