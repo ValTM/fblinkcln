@@ -12,19 +12,28 @@ class FbLinkCleaner {
     const bodyDiv = FbLinkCleaner.setupBodyDiv();
     const footerDiv = FbLinkCleaner.setupFooterDiv();
     this.main.append(headerDiv, bodyDiv, footerDiv);
-    document.oncontextmenu = (e) => {
-      if (e.target.tagName === 'A') {
-        const aHref = new URL(e.target.href);
-        const uParam = aHref.searchParams.get('u');
-        let origLink;
-        if (uParam) {
-          origLink = FbLinkCleaner.generateOrigLink(new URL(uParam));
-        } else {
-          origLink = FbLinkCleaner.generateOrigLink(aHref);
-        }
-        console.log(origLink);
+    FbLinkCleaner.registerEventListeners();
+  }
+
+  static getOriginalLinkOnMiddleClick(e) {
+    if (e.button === 1 && e.target.tagName === 'A') {
+      e.preventDefault();
+      const aHref = new URL(e.target.href);
+      const uParam = aHref.searchParams.get('u');
+      let origLink;
+      if (uParam) {
+        origLink = FbLinkCleaner.generateOrigLink(new URL(uParam));
+      } else {
+        origLink = FbLinkCleaner.generateOrigLink(aHref);
       }
-    };
+      console.log(origLink);
+    }
+  }
+
+  static cancelClickOnMiddleClick(e) {
+    if (e.button === 1) {
+      e.preventDefault();
+    }
   }
 
   static generateOrigLink(url) {
@@ -68,7 +77,7 @@ class FbLinkCleaner {
 
   static setupMainDiv() {
     const mainDiv = document.createElement('div');
-    mainDiv.style.cssText = 'padding:0;marign:0;box-sizing:border-box;position:fixed;width:100px;height:100px;top:0;left:0;background:orange;z-index:1000000;display:flex;flex-direction:column';
+    mainDiv.style.cssText = 'resize:both;overflow:auto;padding:0;marign:0;box-sizing:border-box;position:fixed;width:100px;height:100px;top:0;left:0;background:orange;z-index:1000000;display:flex;flex-direction:column';
     mainDiv.id = 'fblnkclnid';
     document.querySelector('body')
       .appendChild(mainDiv);
@@ -157,15 +166,16 @@ class FbLinkCleaner {
   }
 
   /**
-   * Hide the dialog
+   * Hide the dialog and unreginster event listeners
    */
   hideDialog() {
     this.main.style.visibility = 'hidden';
     this.main.style.opacity = '0';
+    FbLinkCleaner.unregisterEventListeners();
   }
 
   /**
-   * Show and reset dialog
+   * Show and reset dialog and re-register event listeners
    */
   showDialog() {
     const mainDivStyle = this.main.style;
@@ -173,7 +183,29 @@ class FbLinkCleaner {
     mainDivStyle.opacity = '1';
     mainDivStyle.top = '0';
     mainDivStyle.left = '0';
+    FbLinkCleaner.registerEventListeners();
+  }
+
+  /**
+   * Registers event listeners for mousedown and click
+   */
+  static registerEventListeners() {
+    document.addEventListener('mousedown', FbLinkCleaner.getOriginalLinkOnMiddleClick);
+    document.addEventListener('click', FbLinkCleaner.cancelClickOnMiddleClick);
+  }
+
+  /**
+   * Unregisters event listeners for mousedown and click
+   */
+  static unregisterEventListeners() {
+    document.removeEventListener('mousedown', FbLinkCleaner.getOriginalLinkOnMiddleClick);
+    document.removeEventListener('click', FbLinkCleaner.cancelClickOnMiddleClick);
   }
 }
 
-(window.fblnkcln || new FbLinkCleaner()).showDialog();
+if (window.location.hostname === 'www.facebook.com') {
+  (window.fblnkcln || new FbLinkCleaner()).showDialog();
+} else {
+  // eslint-disable-next-line no-alert
+  alert('Only www.facebook.com is supported!');
+}
