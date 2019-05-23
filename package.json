@@ -3,7 +3,7 @@
   "author": "ValTM",
   "version": "1.0.0",
   "description": "Facebook link cleaner",
-  "repository": "null",
+  "repository": "https://github.com/ValTM/fblinkcln",
   "readme": "readme.md",
   "license": "MIT",
   "scripts": {
