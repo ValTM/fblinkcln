@@ -3,15 +3,42 @@ const fbclid = 'fbclid';
 class FbLinkCleaner {
   constructor() {
     window.fblnkcln = this;
+    FbLinkCleaner.appendStyles();
     // Generate all components
-    this.main = FbLinkCleaner.setupMainDiv();
-    const headerDiv = FbLinkCleaner.setupHeaderDiv();
+    const mainDiv = FbLinkCleaner.newDiv('fblnkclnmaindiv');
+    mainDiv.id = 'fblnkclnid';
+    document.querySelector('body').appendChild(mainDiv);
+    this.main = mainDiv;
+    const headerDiv = FbLinkCleaner.newDiv('header');
+    headerDiv.appendChild(FbLinkCleaner.newButton('btn closebtn', 'Close', 'X', FbLinkCleaner.closeBtnFn));
     this.setupDialogDrag(headerDiv);
-    const bodyDiv = this.setupBodyDiv();
-    const footerDiv = FbLinkCleaner.setupFooterDiv();
-    const clearAllBtn = this.setupClearAllBtn();
-    footerDiv.appendChild(clearAllBtn);
+    const bodyDiv = FbLinkCleaner.newDiv('body');
+    this.bodydiv = bodyDiv;
+    const footerDiv = FbLinkCleaner.newDiv('footer');
+    this.clearbtn = FbLinkCleaner.newButton('btn clearallbtn', 'Clear all rows', 'Clear all', FbLinkCleaner.clearAllBtnFn);
+    footerDiv.appendChild(this.clearbtn);
     this.main.append(headerDiv, bodyDiv, footerDiv);
+  }
+
+  /**
+   * Appends CSS style to the page
+   */
+  static appendStyles() {
+    const css = document.createElement('style');
+    let styles = '#fblnkclnid {resize:both;overflow:auto;padding:0;box-sizing:border-box;position:fixed;width:250px;height:200px;top:0;left:0;background:#23232d;z-index:1000000;display:flex;flex-direction:column;visibility:visible;opacity:.7;transition: opacity .3s ease 0s, visibility .3s ease-in 0s;border:1px solid #e9e9e9}';
+    styles += '#fblnkclnid .header{flex:0 1 auto;display:flex;justify-content:flex-end;cursor:move;background:#2c2c36}';
+    styles += '#fblnkclnid .body{flex:1 1 auto;display:flex;flex-direction:column;overflow:auto}';
+    styles += '#fblnkclnid .footer{flex:0 1 20px;display:flex;justify-content:flex-end;margin-right:15px;min-height:20px}';
+    styles += '#fblnkclnid .closebtn{border:none !important;padding:0 5px !important}';
+    styles += '#fblnkclnid .clearallbtn{padding:0 3px !important;visibility:hidden}';
+    styles += '#fblnkclnid .rowwrapper{background:#3b3b4b;display:flex;justify-content:space-between}';
+    styles += '#fblnkclnid .rowwrapper:nth-child(2n){background:#2c2c46}';
+    styles += '#fblnkclnid .btnwrapper{min-width:max-content}';
+    styles += '#fblnkclnid .lnkwrapper{padding-left:5px;overflow:hidden;color:#f5f5f5 !important;display:flex;align-items:center}';
+    styles += '#fblnkclnid .lnk{color:inherit;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}';
+    styles += '#fblnkclnid .btn{border:1px solid;padding:2px 5px;cursor:pointer;margin:1px;color:#fff;background:transparent;opacity:.8}';
+    css.appendChild(document.createTextNode(styles));
+    document.querySelector('head').appendChild(css);
   }
 
   /**
@@ -62,17 +89,18 @@ class FbLinkCleaner {
    * @param {string} href
    */
   setupRow(href) {
-    const rowWrapper = FbLinkCleaner.createRowWrapper();
-    const linkWrapper = FbLinkCleaner.createLinkWrapper(href);
-    const buttonsWrapper = FbLinkCleaner.createButtonsWrapper();
-    const copyButton = FbLinkCleaner.createRowButton('Copy to clipboard', 'COPY', FbLinkCleaner.getCopyLinkFn()
+    const rowWrapper = FbLinkCleaner.newDiv('rowwrapper');
+    const linkWrapper = FbLinkCleaner.newDiv('lnkwrapper');
+    linkWrapper.appendChild(FbLinkCleaner.createLinkEl(href));
+    const buttonsWrapper = FbLinkCleaner.newDiv('btnwrapper');
+    const copyButton = FbLinkCleaner.newButton('btn', 'Copy to clipboard', 'COPY', FbLinkCleaner.getCopyLinkFn()
       .bind({
         href,
         mainDiv: this.main,
       }));
-    const openButton = FbLinkCleaner.createRowButton('Open in new tab', 'OPEN', FbLinkCleaner.getOpenLinkFn()
+    const openButton = FbLinkCleaner.newButton('btn', 'Open in new tab', 'OPEN', FbLinkCleaner.getOpenLinkFn()
       .bind(href));
-    const delButton = FbLinkCleaner.createRowButton('Delete row', 'X', FbLinkCleaner.getDeleteRowFn()
+    const delButton = FbLinkCleaner.newButton('btn', 'Delete row', 'X', FbLinkCleaner.getDeleteRowFn()
       .bind({
         bodydiv: this.bodydiv,
         rowWrapper,
@@ -81,11 +109,40 @@ class FbLinkCleaner {
     rowWrapper.appendChild(linkWrapper);
     rowWrapper.appendChild(buttonsWrapper);
     this.bodydiv.appendChild(rowWrapper);
+    this.showClearAllBtn();
   }
 
   /*
    * BUTTON FUNCTIONS
    */
+
+  showClearAllBtn() {
+    this.clearbtn.style.visibility = 'visible';
+  }
+
+  hideClearAllBtn() {
+    this.clearbtn.style.visibility = 'hidden';
+  }
+
+  /**
+   * @private
+   * Function for the close button to close the dialog
+   */
+  static closeBtnFn() {
+    window.fblnkcln.hideDialog();
+  }
+
+  /**
+   * @private
+   * A function for the clear all button
+   */
+  static clearAllBtnFn() {
+    const { bodydiv } = window.fblnkcln;
+    while (bodydiv.firstChild) {
+      bodydiv.removeChild(bodydiv.firstChild);
+    }
+    window.fblnkcln.hideClearAllBtn();
+  }
 
   /**
    * Creats the function to copy the link to the clipboard
@@ -125,6 +182,9 @@ class FbLinkCleaner {
   static getDeleteRowFn() {
     return function deleteRow() {
       this.bodydiv.removeChild(this.rowWrapper);
+      if (this.bodydiv.children.length === 0) {
+        window.fblnkcln.hideClearAllBtn();
+      }
     };
   }
 
@@ -132,156 +192,48 @@ class FbLinkCleaner {
    * END BUTTON FUNCTIONS
    */
 
-  /*
-  * ROW ELEMENTS HTML
-  */
-
-  /**
-   * Creates a button wrapper div
-   * @returns {HTMLDivElement}
-   */
-  static createButtonsWrapper() {
-    const buttonsWrapper = document.createElement('div');
-    buttonsWrapper.style.cssText = 'min-width:max-content';
-    return buttonsWrapper;
-  }
-
-  /**
-   * Creates a whole row wrapper div
-   * @returns {HTMLDivElement}
-   */
-  static createRowWrapper() {
-    const rowWrapper = document.createElement('div');
-    rowWrapper.style.cssText = 'background:aquamarine;display:flex;justify-content:space-between';
-    return rowWrapper;
-  }
-
-  /**
-   * Creates a link wrapper div
-   * @returns {HTMLDivElement}
-   */
-  static createLinkWrapper(href) {
-    const linkWrapper = document.createElement('div');
-    linkWrapper.style.cssText = 'padding-left:5px;overflow:hidden;color:black !important;display:flex;align-items:center';
-    linkWrapper.appendChild(FbLinkCleaner.createLink(href));
-    return linkWrapper;
-  }
-
   /**
    * Creates an A element with the href as link
    * @param {string} href href for the A element
    * @returns {HTMLAnchorElement} the created A element
    */
-  static createLink(href) {
+  static createLinkEl(href) {
     const link = document.createElement('a');
     link.href = href;
     link.innerText = href;
-    link.style.cssText = 'color:inherit;overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
+    link.className = 'lnk';
     link.target = '_blank';
     return link;
   }
 
+
   /**
-   * Creates a row button
+   * Creates a button
+   * @param {string} className class name of the button
    * @param {string} bTitle title of the button
    * @param {string} innerText inner text of the button
    * @param {Function} handler a function to execute on click
    * @returns {HTMLButtonElement} the created button
    */
-  static createRowButton(bTitle, innerText, handler) {
+  static newButton(className, bTitle, innerText, handler) {
     const button = document.createElement('button');
-    button.style.cssText = 'border:1px solid;padding:2px 5px;cursor:pointer;margin:1px';
+    button.className = className;
     button.title = bTitle;
     button.innerText = innerText;
     button.onclick = handler;
     return button;
   }
 
-  /*
-  * END ROW ELEMENTS HTML
-  */
-
-  /*
-  * MAIN HTML ELEMENTS
-  */
-
   /**
-   * Creates the footer div
-   * @returns {HTMLDivElement}
+   * Creates a new div with a class name
+   * @param {string} className the class name
+   * @returns {HTMLDivElement} the created div
    */
-  static setupFooterDiv() {
-    const footerDiv = document.createElement('div');
-    footerDiv.style.cssText = 'flex:0 1 20px;display:flex;justify-content:flex-end;margin-right:12px;min-height:20px;';
-    return footerDiv;
+  static newDiv(className) {
+    const div = document.createElement('div');
+    div.className = className;
+    return div;
   }
-
-  /**
-   * Creates the body div
-   * @returns {HTMLDivElement}
-   */
-  setupBodyDiv() {
-    const bodyDiv = document.createElement('div');
-    bodyDiv.style.cssText = 'flex:1 1 auto;display:flex;flex-direction:column;overflow:auto';
-    this.bodydiv = bodyDiv;
-    return bodyDiv;
-  }
-
-  /**
-   * Creates the header div
-   * @returns {HTMLDivElement}
-   */
-  static setupHeaderDiv() {
-    const headerDiv = document.createElement('div');
-    headerDiv.style.cssText = ' flex:0 1 auto;display:flex;justify-content:flex-end;cursor:move;background-color:rgb(44,44,54)';
-    headerDiv.appendChild(FbLinkCleaner.setupCloseBtn());
-    return headerDiv;
-  }
-
-  /**
-   * Creates the close button for the dialog
-   * @returns {HTMLButtonElement}
-   */
-  static setupCloseBtn() {
-    const closeBtn = document.createElement('button');
-    closeBtn.style.all = 'unset';
-    closeBtn.title = 'Close';
-    closeBtn.style.cssText = 'border:none;padding:0 5px;background:none;cursor:pointer;color:rgb(233,233,233);';
-    closeBtn.innerText = 'X';
-    closeBtn.onclick = () => {
-      window.fblnkcln.hideDialog();
-    };
-    return closeBtn;
-  }
-
-  /**
-   * Creates the main div for the dialog
-   * @returns {HTMLDivElement}
-   */
-  static setupMainDiv() {
-    const mainDiv = document.createElement('div');
-    mainDiv.style.cssText = 'resize:both;overflow:auto;padding:0px;box-sizing:border-box;position:fixed;width:250px;height:200px;top:0;left:0;background-color:rgb(35,35,45);z-index:1000000;display:flex;flex-direction:column;visibility:visible;opacity:0.7;transition: opacity 0.3s ease 0s, visibility 0.3s ease-in 0s;border:1px solid rgb(233,233,233);';
-    mainDiv.id = 'fblnkclnid';
-    document.querySelector('body')
-      .appendChild(mainDiv);
-    return mainDiv;
-  }
-
-  setupClearAllBtn() {
-    const button = document.createElement('button');
-    button.style.cssText = 'padding:0 3px;border:1px solid;cursor:pointer';
-    button.title = 'Clear all rows';
-    button.innerText = 'Clear all';
-    button.onclick = () => {
-      while (this.bodydiv.firstChild) {
-        this.bodydiv.removeChild(this.bodydiv.firstChild);
-      }
-    };
-    return button;
-  }
-
-  /*
-  * END MAIN HTML ELEMENTS
-  */
 
   /**
    * Sets up the dialog draging capabilites
