@@ -9,14 +9,14 @@ Known issues:
 
 Future plans:
 ```text
-✔ Better readme
-✔ Auto-open toggle
-✔ Auto-clean on action toggle
-✔ Duplicate prevention
-✔ Fetching link titles
-✔ How to use instructions
-✔ Optimizations and further minification
-✔ Toggle to use left mouse click instead of middle click
+✔️ Better readme
+✔️ Auto-open toggle
+✔️ Auto-clean on action toggle
+✔️ Duplicate prevention
+✔️ Fetching link titles
+✔️ How to use instructions
+✔️ Optimizations and further minification
+✔️ Toggle to use left mouse click instead of middle click
 ```
 
 You're free to do whatever you want with this code.
