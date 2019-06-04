@@ -77,10 +77,18 @@ class FbLinkCleaner {
    */
   static generateOrigLink(url) {
     let baseUrl = `${url.protocol}//${url.hostname}${url.pathname}`;
+    baseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
     if (url.search.lastIndexOf(fbclid) > 0) {
-      baseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
       baseUrl += `${url.search.substring(0, (url.search.lastIndexOf(fbclid) - 1))}`;
+      return baseUrl;
     }
+    if (url.pathname.indexOf('photo.php') > 0) {
+      return `${baseUrl}?fbid=${url.searchParams.get('fbid')}`;
+    }
+    if (url.pathname.indexOf('profile.php') > 0) {
+      return `${baseUrl}?id=${url.searchParams.get('id')}`;
+    }
+    console.log('No cleaning done, returning base URL');
     return baseUrl;
   }
 

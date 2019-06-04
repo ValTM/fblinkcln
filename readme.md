@@ -9,6 +9,7 @@ Known issues:
 
 Future plans:
 ```text
+✔️ Feature list
 ✔️ Better readme
 ✔️ Auto-open toggle
 ✔️ Auto-clean on action toggle
