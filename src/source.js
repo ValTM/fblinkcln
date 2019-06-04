@@ -82,11 +82,15 @@ class FbLinkCleaner {
       baseUrl += `${url.search.substring(0, (url.search.lastIndexOf(fbclid) - 1))}`;
       return baseUrl;
     }
-    if (url.pathname.indexOf('photo.php') > 0) {
+    const pn = url.pathname;
+    if (pn.indexOf('photo.php') > 0) {
       return `${baseUrl}?fbid=${url.searchParams.get('fbid')}`;
     }
-    if (url.pathname.indexOf('profile.php') > 0) {
+    if (pn.indexOf('profile.php') > 0) {
       return `${baseUrl}?id=${url.searchParams.get('id')}`;
+    }
+    if (pn.indexOf('mutual_friends') > 0) {
+      return `${baseUrl}?uid=${url.searchParams.get('uid')}`;
     }
     console.log('No cleaning done, returning base URL');
     return baseUrl;
