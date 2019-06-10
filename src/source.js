@@ -10,6 +10,9 @@ class FbLinkCleaner {
     document.querySelector('body').appendChild(mainDiv);
     this.main = mainDiv;
     const headerDiv = FbLinkCleaner.newDiv('header');
+    const headerTitleDiv = FbLinkCleaner.newDiv('headerTitle');
+    headerTitleDiv.innerText = 'Clean links';
+    headerDiv.appendChild(headerTitleDiv);
     headerDiv.appendChild(FbLinkCleaner.newButton('btn closebtn', 'Close', 'X', FbLinkCleaner.closeBtnFn));
     this.setupDialogDrag(headerDiv);
     const bodyDiv = FbLinkCleaner.newDiv('body');
@@ -25,17 +28,19 @@ class FbLinkCleaner {
    */
   static appendStyles() {
     const css = document.createElement('style');
-    let styles = '#fblnkclnid {resize:both;overflow:auto;padding:0;box-sizing:border-box;position:fixed;width:250px;height:200px;top:0;left:0;background:#23232d;z-index:1000000;display:flex;flex-direction:column;visibility:visible;opacity:.7;transition: opacity .3s ease 0s, visibility .3s ease-in 0s;border:1px solid #e9e9e9}';
-    styles += '#fblnkclnid .header{flex:0 1 auto;display:flex;justify-content:flex-end;cursor:move;background:#2c2c36}';
-    styles += '#fblnkclnid .body{flex:1 1 auto;display:flex;flex-direction:column;overflow:auto}';
+    let styles = '#fblnkclnid,#fblnkclnid .body{display:flex;flex-direction:column;overflow:auto}';
+    styles += '#fblnkclnid {resize:both;padding:0;box-sizing:border-box;position:fixed;width:250px;height:200px;background:#23232d;z-index:1000000;opacity:.7;transition: opacity .3s ease 0s, visibility .3s ease-in 0s;border:1px solid #e9e9e9}';
+    styles += '#fblnkclnid .header{flex:0 1 auto;display:flex;justify-content:space-between;cursor:move;background:#2c2c36;border-bottom:1px solid rgba(233,233,233,0.5)}';
+    styles += '#fblnkclnid .headerTitle{padding:0 5px;color:tomato !important}';
+    styles += '#fblnkclnid .body{flex:1 1 auto}';
     styles += '#fblnkclnid .footer{flex:0 1 20px;display:flex;justify-content:flex-end;margin-right:15px;min-height:20px}';
     styles += '#fblnkclnid .closebtn{border:none !important;padding:0 5px !important}';
     styles += '#fblnkclnid .clearallbtn{padding:0 3px !important;visibility:hidden}';
     styles += '#fblnkclnid .rowwrapper{background:#3b3b4b;display:flex;justify-content:space-between}';
     styles += '#fblnkclnid .rowwrapper:nth-child(2n){background:#2c2c46}';
-    styles += '#fblnkclnid .btnwrapper{min-width:max-content}';
     styles += '#fblnkclnid .lnkwrapper{padding-left:5px;overflow:hidden;color:#f5f5f5 !important;display:flex;align-items:center}';
     styles += '#fblnkclnid .lnk{color:inherit;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}';
+    styles += '#fblnkclnid .btnwrapper{min-width:max-content}';
     styles += '#fblnkclnid .btn{border:1px solid;padding:2px 5px;cursor:pointer;margin:1px;color:#fff;background:transparent;opacity:.8}';
     css.appendChild(document.createTextNode(styles));
     document.querySelector('head').appendChild(css);
@@ -46,7 +51,7 @@ class FbLinkCleaner {
    * @param {MouseEvent} e
    */
   getOriginalLinkOnMiddleClick(e) {
-    if (e.button === 1 && e.target.tagName === 'A') {
+    if (!this.dHidden && e.button === 1 && e.target.tagName === 'A') {
       e.preventDefault();
       const aHref = new URL(e.target.href);
       const uParam = aHref.searchParams.get('u');
@@ -64,8 +69,8 @@ class FbLinkCleaner {
    * Cancels click event on middle click
    * @param {MouseEvent} e
    */
-  static cancelClickOnMiddleClick(e) {
-    if (e.button === 1) {
+  cancelClickOnMiddleClick(e) {
+    if (!this.dHidden && e.button === 1) {
       e.preventDefault();
     }
   }
@@ -337,21 +342,22 @@ class FbLinkCleaner {
    * Hide the dialog and unreginster event listeners
    */
   hideDialog() {
+    this.dHidden = true;
     this.main.style.visibility = 'hidden';
     this.main.style.opacity = '0';
-    this.unregisterEventListeners();
   }
 
   /**
    * Show and reset dialog and re-register event listeners
    */
   showDialog() {
+    this.dHidden = false;
     const mainDivStyle = this.main.style;
     mainDivStyle.visibility = 'visible';
     mainDivStyle.opacity = '1';
     mainDivStyle.top = '0';
     mainDivStyle.left = '0';
-    this.registerEventListeners();
+    if (!this.eventsRegistered) this.registerEventListeners();
   }
 
   /**
@@ -359,15 +365,8 @@ class FbLinkCleaner {
    */
   registerEventListeners() {
     document.addEventListener('mousedown', this.getOriginalLinkOnMiddleClick.bind(this));
-    document.addEventListener('click', FbLinkCleaner.cancelClickOnMiddleClick);
-  }
-
-  /**
-   * Unregisters event listeners for mousedown and click
-   */
-  unregisterEventListeners() {
-    document.removeEventListener('mousedown', this.getOriginalLinkOnMiddleClick.bind(this));
-    document.removeEventListener('click', FbLinkCleaner.cancelClickOnMiddleClick);
+    document.addEventListener('click', this.cancelClickOnMiddleClick);
+    this.eventsRegistered = true;
   }
 }
 
