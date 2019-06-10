@@ -5,22 +5,45 @@ class FbLinkCleaner {
     window.fblnkcln = this;
     FbLinkCleaner.appendStyles();
     // Generate all components
-    const mainDiv = FbLinkCleaner.newDiv('fblnkclnmaindiv');
+    const mainDiv = FbLinkCleaner.newDiv('');
     mainDiv.id = 'fblnkcln';
     document.querySelector('body').appendChild(mainDiv);
     this.main = mainDiv;
-    const headerDiv = FbLinkCleaner.newDiv('header');
+    const headerDiv = this.createHeaderDiv();
+    this.bodydiv = FbLinkCleaner.newDiv('body df bb');
+    const footerDiv = this.createFooterDiv();
+    this.main.append(headerDiv, this.bodydiv, footerDiv);
+  }
+
+  /**
+   * Creates the footer div with all its elements
+   * @returns {HTMLDivElement} the generated footer div
+   */
+  createFooterDiv() {
+    const footerDiv = FbLinkCleaner.newDiv('footer df');
+    this.settingsdiv = FbLinkCleaner.newDiv('settings df');
+    this.settingsdiv.innerHTML = '<div><input type="checkbox">Auto-clean</div>'
+      + '<div><input type="checkbox">Auto-open</div>'
+      + '<div><input type="checkbox">Prevent dupes</div>';
+    const clearAllDiv = FbLinkCleaner.newDiv('clearAll');
+    this.clearbtn = FbLinkCleaner.newButton('btn clearallbtn', 'Clear all rows', 'Clear all', FbLinkCleaner.clearAllBtnFn);
+    clearAllDiv.appendChild(this.clearbtn);
+    footerDiv.append(this.settingsdiv, clearAllDiv);
+    return footerDiv;
+  }
+
+  /**
+   * Creates the header div with all its elements
+   * @returns {HTMLDivElement} the generated header div
+   */
+  createHeaderDiv() {
+    const headerDiv = FbLinkCleaner.newDiv('header df bb');
     const headerTitleDiv = FbLinkCleaner.newDiv('headerTitle');
     headerTitleDiv.innerText = 'Clean links';
     headerDiv.appendChild(headerTitleDiv);
     headerDiv.appendChild(FbLinkCleaner.newButton('btn closebtn', 'Close', 'X', FbLinkCleaner.closeBtnFn));
     this.setupDialogDrag(headerDiv);
-    const bodyDiv = FbLinkCleaner.newDiv('body');
-    this.bodydiv = bodyDiv;
-    const footerDiv = FbLinkCleaner.newDiv('footer');
-    this.clearbtn = FbLinkCleaner.newButton('btn clearallbtn', 'Clear all rows', 'Clear all', FbLinkCleaner.clearAllBtnFn);
-    footerDiv.appendChild(this.clearbtn);
-    this.main.append(headerDiv, bodyDiv, footerDiv);
+    return headerDiv;
   }
 
   /**
@@ -28,21 +51,23 @@ class FbLinkCleaner {
    */
   static appendStyles() {
     const css = document.createElement('style');
-    let styles = '#fblnkcln,#fblnkcln .body{display:flex;flex-direction:column;overflow:auto}';
-    styles += '#fblnkcln {resize:both;padding:0;box-sizing:border-box;position:fixed;width:250px;height:200px;background:#23232d;z-index:1000000;opacity:.7;transition: opacity .3s ease 0s, visibility .3s ease-in 0s;border:1px solid #e9e9e9}';
-    styles += '#fblnkcln .header{flex:0 1 auto;display:flex;justify-content:space-between;cursor:move;background:#2c2c36}';
-    styles += '#fblnkcln .header, #fblnkcln .body{border-bottom:1px solid rgba(233,233,233,0.5)}';
-    styles += '#fblnkcln .headerTitle{padding:0 5px;color:tomato !important}';
-    styles += '#fblnkcln .body{flex:1 1 auto}';
-    styles += '#fblnkcln .footer{flex:0 1 20px;display:flex;justify-content:flex-end;margin-right:15px;min-height:20px}';
-    styles += '#fblnkcln .closebtn{border:none !important;padding:0 5px !important}';
-    styles += '#fblnkcln .clearallbtn{padding:0 3px !important;visibility:hidden}';
-    styles += '#fblnkcln .rowwrapper{background:#3b3b4b;display:flex;justify-content:space-between}';
-    styles += '#fblnkcln .rowwrapper:nth-child(2n){background:#2c2c46}';
-    styles += '#fblnkcln .lnkwrapper{padding-left:5px;overflow:hidden;color:#f5f5f5 !important;display:flex;align-items:center}';
-    styles += '#fblnkcln .lnk{color:inherit;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}';
-    styles += '#fblnkcln .btnwrapper{min-width:max-content}';
-    styles += '#fblnkcln .btn{border:1px solid;padding:2px 5px;cursor:pointer;margin:1px;color:#fff;background:transparent;opacity:.8}';
+    const styles = '#fblnkcln {display:grid;grid-template-rows:1rem auto minmax(min-content, 1.1rem);overflow:auto;resize:both;padding:0;box-sizing:border-box;position:fixed;min-width:260px;min-heigh:100px;width:260px;height:200px;background:#23232d;z-index:999;transition: opacity .3s ease 0s, visibility .3s ease-in 0s;border:1px solid #e9e9e9}'
+      + '#fblnkcln .df{display:flex}'
+      + '#fblnkcln .bb{border-bottom:1px solid rgba(233,233,233,0.5)}'
+      + '#fblnkcln .header{justify-content:space-between;cursor:move;background:#2c2c36}'
+      + '#fblnkcln .headerTitle{padding:0 5px;color:tomato !important}'
+      + '#fblnkcln .body{flex-direction:column;overflow:auto;scrollbar-color:tomato transparent;scrollbar-width:thin}'
+      + '#fblnkcln .footer{flex-direction:column;margin-right:15px}'
+      + '#fblnkcln input[type="checkbox"]{vertical-align:bottom}'
+      + '#fblnkcln .clearAll{align-self:flex-end}'
+      + '#fblnkcln .closebtn{border:none !important;padding:0 5px !important}'
+      + '#fblnkcln .clearallbtn{padding:0 3px !important;visibility:hidden}'
+      + '#fblnkcln .rowwrapper{background:#3b3b4b;justify-content:space-between}'
+      + '#fblnkcln .rowwrapper:nth-child(2n){background:#2c2c46}'
+      + '#fblnkcln .lnkwrapper{padding-left:5px;overflow:hidden;color:#f5f5f5 !important;align-items:center}'
+      + '#fblnkcln .lnk{color:inherit;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
+      + '#fblnkcln .btnwrapper{min-width:max-content}'
+      + '#fblnkcln .btn{border:1px solid;padding:2px 5px;cursor:pointer;margin:1px;color:#fff;background:transparent;opacity:.8}';
     css.appendChild(document.createTextNode(styles));
     document.querySelector('head').appendChild(css);
   }
@@ -107,8 +132,8 @@ class FbLinkCleaner {
    * @param {string} href
    */
   setupRow(href) {
-    const rowWrapper = FbLinkCleaner.newDiv('rowwrapper');
-    const linkWrapper = FbLinkCleaner.newDiv('lnkwrapper');
+    const rowWrapper = FbLinkCleaner.newDiv('rowwrapper df');
+    const linkWrapper = FbLinkCleaner.newDiv('lnkwrapper df');
     linkWrapper.appendChild(FbLinkCleaner.createLinkEl(href));
     const buttonsWrapper = FbLinkCleaner.newDiv('btnwrapper');
     const copyButton = FbLinkCleaner.newButton('btn', 'Copy to clipboard', 'COPY', FbLinkCleaner.getCopyLinkFn()
