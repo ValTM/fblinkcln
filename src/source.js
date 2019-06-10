@@ -21,13 +21,20 @@ class FbLinkCleaner {
    */
   createFooterDiv() {
     const footerDiv = FbLinkCleaner.newDiv('footer df');
-    this.settingsdiv = FbLinkCleaner.newDiv('settings df');
+    this.settingsdiv = FbLinkCleaner.newDiv('dn');
     this.settingsdiv.innerHTML = '<div><input type="checkbox">Auto-clean</div>'
       + '<div><input type="checkbox">Auto-open</div>'
       + '<div><input type="checkbox">Prevent dupes</div>';
-    const clearAllDiv = FbLinkCleaner.newDiv('clearAll');
+    const clearAllDiv = FbLinkCleaner.newDiv('df jcsb');
+    const settingsIconDiv = FbLinkCleaner.newDiv('setI');
+    settingsIconDiv.onclick = () => {
+      const div = window.fblnkcln.settingsdiv;
+      // eslint-disable-next-line no-unused-expressions
+      div.classList.contains('dn') ? div.className = 'df' : div.className = 'dn';
+    };
+    settingsIconDiv.innerHTML = '<svg class="svg-icon df" viewBox="0 0 20 20"><path d="M6.176,7.241V6.78c0-0.221-0.181-0.402-0.402-0.402c-0.221,0-0.403,0.181-0.403,0.402v0.461C4.79,7.416,4.365,7.955,4.365,8.591c0,0.636,0.424,1.175,1.006,1.35v3.278c0,0.222,0.182,0.402,0.403,0.402c0.222,0,0.402-0.181,0.402-0.402V9.941c0.582-0.175,1.006-0.714,1.006-1.35C7.183,7.955,6.758,7.416,6.176,7.241 M5.774,9.195c-0.332,0-0.604-0.272-0.604-0.604c0-0.332,0.272-0.604,0.604-0.604c0.332,0,0.604,0.272,0.604,0.604C6.377,8.923,6.105,9.195,5.774,9.195 M10.402,10.058V6.78c0-0.221-0.181-0.402-0.402-0.402c-0.222,0-0.402,0.181-0.402,0.402v3.278c-0.582,0.175-1.006,0.714-1.006,1.35c0,0.637,0.424,1.175,1.006,1.351v0.461c0,0.222,0.181,0.402,0.402,0.402c0.221,0,0.402-0.181,0.402-0.402v-0.461c0.582-0.176,1.006-0.714,1.006-1.351C11.408,10.772,10.984,10.233,10.402,10.058M10,12.013c-0.333,0-0.604-0.272-0.604-0.604S9.667,10.805,10,10.805c0.332,0,0.604,0.271,0.604,0.604S10.332,12.013,10,12.013M14.629,8.448V6.78c0-0.221-0.182-0.402-0.403-0.402c-0.221,0-0.402,0.181-0.402,0.402v1.668c-0.581,0.175-1.006,0.714-1.006,1.35c0,0.636,0.425,1.176,1.006,1.351v2.07c0,0.222,0.182,0.402,0.402,0.402c0.222,0,0.403-0.181,0.403-0.402v-2.07c0.581-0.175,1.006-0.715,1.006-1.351C15.635,9.163,15.21,8.624,14.629,8.448 M14.226,10.402c-0.331,0-0.604-0.272-0.604-0.604c0-0.332,0.272-0.604,0.604-0.604c0.332,0,0.604,0.272,0.604,0.604C14.83,10.13,14.558,10.402,14.226,10.402 M17.647,3.962H2.353c-0.221,0-0.402,0.181-0.402,0.402v11.27c0,0.222,0.181,0.402,0.402,0.402h15.295c0.222,0,0.402-0.181,0.402-0.402V4.365C18.05,4.144,17.869,3.962,17.647,3.962 M17.245,15.232H2.755V4.768h14.49V15.232z"></path></svg>';
     this.clearbtn = FbLinkCleaner.newButton('btn clearallbtn', 'Clear all rows', 'Clear all', FbLinkCleaner.clearAllBtnFn);
-    clearAllDiv.appendChild(this.clearbtn);
+    clearAllDiv.append(settingsIconDiv, this.clearbtn);
     footerDiv.append(this.settingsdiv, clearAllDiv);
     return footerDiv;
   }
@@ -37,7 +44,7 @@ class FbLinkCleaner {
    * @returns {HTMLDivElement} the generated header div
    */
   createHeaderDiv() {
-    const headerDiv = FbLinkCleaner.newDiv('header df bb');
+    const headerDiv = FbLinkCleaner.newDiv('header df bb jcsb');
     const headerTitleDiv = FbLinkCleaner.newDiv('headerTitle');
     headerTitleDiv.innerText = 'Clean links';
     headerDiv.appendChild(headerTitleDiv);
@@ -53,16 +60,20 @@ class FbLinkCleaner {
     const css = document.createElement('style');
     const styles = '#fblnkcln {display:grid;grid-template-rows:1rem auto minmax(min-content, 1.1rem);overflow:auto;resize:both;padding:0;box-sizing:border-box;position:fixed;min-width:260px;min-heigh:100px;width:260px;height:200px;background:#23232d;z-index:999;transition: opacity .3s ease 0s, visibility .3s ease-in 0s;border:1px solid #e9e9e9}'
       + '#fblnkcln .df{display:flex}'
+      + '#fblnkcln .dn{display:none}'
       + '#fblnkcln .bb{border-bottom:1px solid rgba(233,233,233,0.5)}'
-      + '#fblnkcln .header{justify-content:space-between;cursor:move;background:#2c2c36}'
+      + '#fblnkcln .jcsb{justify-content:space-between}'
+      + '#fblnkcln input[type="checkbox"]{vertical-align:bottom}'
+      + '#fblnkcln .svg-icon{height:20px;width:20px}#fblnkcln .svg-icon path,#fblnkcln .svg-icon polygon,#fblnkcln .svg-icon rect{fill:rgba(233,233,233,0.5)}#fblnkcln .svg-icon circle{stroke:#4691f6;stroke-width:1}'
+      + '#fblnkcln .header{cursor:move;background:#2c2c36}'
       + '#fblnkcln .headerTitle{padding:0 5px;color:tomato !important}'
       + '#fblnkcln .body{flex-direction:column;overflow:auto;scrollbar-color:tomato transparent;scrollbar-width:thin}'
       + '#fblnkcln .footer{flex-direction:column;margin-right:15px}'
-      + '#fblnkcln input[type="checkbox"]{vertical-align:bottom}'
-      + '#fblnkcln .clearAll{align-self:flex-end}'
+      + '#fblnkcln .setI:hover{background-color:rgba(233,233,233,0.2)}'
+      + '#fblnkcln .setI:active{background-color:rgba(180,180,180,0.2)}'
       + '#fblnkcln .closebtn{border:none !important;padding:0 5px !important}'
       + '#fblnkcln .clearallbtn{padding:0 3px !important;visibility:hidden}'
-      + '#fblnkcln .rowwrapper{background:#3b3b4b;justify-content:space-between}'
+      + '#fblnkcln .rowwrapper{background:#3b3b4b}'
       + '#fblnkcln .rowwrapper:nth-child(2n){background:#2c2c46}'
       + '#fblnkcln .lnkwrapper{padding-left:5px;overflow:hidden;color:#f5f5f5 !important;align-items:center}'
       + '#fblnkcln .lnk{color:inherit;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
@@ -132,7 +143,7 @@ class FbLinkCleaner {
    * @param {string} href
    */
   setupRow(href) {
-    const rowWrapper = FbLinkCleaner.newDiv('rowwrapper df');
+    const rowWrapper = FbLinkCleaner.newDiv('rowwrapper df jcsb');
     const linkWrapper = FbLinkCleaner.newDiv('lnkwrapper df');
     linkWrapper.appendChild(FbLinkCleaner.createLinkEl(href));
     const buttonsWrapper = FbLinkCleaner.newDiv('btnwrapper');
