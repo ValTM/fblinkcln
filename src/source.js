@@ -121,6 +121,7 @@ class FbLinkCleaner {
     rowWrapper.appendChild(linkWrapper);
     rowWrapper.appendChild(buttonsWrapper);
     this.bodydiv.appendChild(rowWrapper);
+    rowWrapper.scrollIntoView();
     this.showClearAllBtn();
   }
 
