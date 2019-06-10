@@ -6,7 +6,7 @@ class FbLinkCleaner {
     FbLinkCleaner.appendStyles();
     // Generate all components
     const mainDiv = FbLinkCleaner.newDiv('fblnkclnmaindiv');
-    mainDiv.id = 'fblnkclnid';
+    mainDiv.id = 'fblnkcln';
     document.querySelector('body').appendChild(mainDiv);
     this.main = mainDiv;
     const headerDiv = FbLinkCleaner.newDiv('header');
@@ -28,20 +28,21 @@ class FbLinkCleaner {
    */
   static appendStyles() {
     const css = document.createElement('style');
-    let styles = '#fblnkclnid,#fblnkclnid .body{display:flex;flex-direction:column;overflow:auto}';
-    styles += '#fblnkclnid {resize:both;padding:0;box-sizing:border-box;position:fixed;width:250px;height:200px;background:#23232d;z-index:1000000;opacity:.7;transition: opacity .3s ease 0s, visibility .3s ease-in 0s;border:1px solid #e9e9e9}';
-    styles += '#fblnkclnid .header{flex:0 1 auto;display:flex;justify-content:space-between;cursor:move;background:#2c2c36;border-bottom:1px solid rgba(233,233,233,0.5)}';
-    styles += '#fblnkclnid .headerTitle{padding:0 5px;color:tomato !important}';
-    styles += '#fblnkclnid .body{flex:1 1 auto}';
-    styles += '#fblnkclnid .footer{flex:0 1 20px;display:flex;justify-content:flex-end;margin-right:15px;min-height:20px}';
-    styles += '#fblnkclnid .closebtn{border:none !important;padding:0 5px !important}';
-    styles += '#fblnkclnid .clearallbtn{padding:0 3px !important;visibility:hidden}';
-    styles += '#fblnkclnid .rowwrapper{background:#3b3b4b;display:flex;justify-content:space-between}';
-    styles += '#fblnkclnid .rowwrapper:nth-child(2n){background:#2c2c46}';
-    styles += '#fblnkclnid .lnkwrapper{padding-left:5px;overflow:hidden;color:#f5f5f5 !important;display:flex;align-items:center}';
-    styles += '#fblnkclnid .lnk{color:inherit;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}';
-    styles += '#fblnkclnid .btnwrapper{min-width:max-content}';
-    styles += '#fblnkclnid .btn{border:1px solid;padding:2px 5px;cursor:pointer;margin:1px;color:#fff;background:transparent;opacity:.8}';
+    let styles = '#fblnkcln,#fblnkcln .body{display:flex;flex-direction:column;overflow:auto}';
+    styles += '#fblnkcln {resize:both;padding:0;box-sizing:border-box;position:fixed;width:250px;height:200px;background:#23232d;z-index:1000000;opacity:.7;transition: opacity .3s ease 0s, visibility .3s ease-in 0s;border:1px solid #e9e9e9}';
+    styles += '#fblnkcln .header{flex:0 1 auto;display:flex;justify-content:space-between;cursor:move;background:#2c2c36}';
+    styles += '#fblnkcln .header, #fblnkcln .body{border-bottom:1px solid rgba(233,233,233,0.5)}';
+    styles += '#fblnkcln .headerTitle{padding:0 5px;color:tomato !important}';
+    styles += '#fblnkcln .body{flex:1 1 auto}';
+    styles += '#fblnkcln .footer{flex:0 1 20px;display:flex;justify-content:flex-end;margin-right:15px;min-height:20px}';
+    styles += '#fblnkcln .closebtn{border:none !important;padding:0 5px !important}';
+    styles += '#fblnkcln .clearallbtn{padding:0 3px !important;visibility:hidden}';
+    styles += '#fblnkcln .rowwrapper{background:#3b3b4b;display:flex;justify-content:space-between}';
+    styles += '#fblnkcln .rowwrapper:nth-child(2n){background:#2c2c46}';
+    styles += '#fblnkcln .lnkwrapper{padding-left:5px;overflow:hidden;color:#f5f5f5 !important;display:flex;align-items:center}';
+    styles += '#fblnkcln .lnk{color:inherit;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}';
+    styles += '#fblnkcln .btnwrapper{min-width:max-content}';
+    styles += '#fblnkcln .btn{border:1px solid;padding:2px 5px;cursor:pointer;margin:1px;color:#fff;background:transparent;opacity:.8}';
     css.appendChild(document.createTextNode(styles));
     document.querySelector('head').appendChild(css);
   }
