@@ -89,7 +89,7 @@ class FbLinkCleaner {
    */
   getOriginalLinkOnMiddleClick(e) {
     if (!this.dHidden && e.button === 1 && e.target.tagName === 'A') {
-      e.preventDefault();
+      FbLinkCleaner.stopEvent(e);
       const aHref = new URL(e.target.href);
       const uParam = aHref.searchParams.get('u');
       let origLink;
@@ -99,6 +99,8 @@ class FbLinkCleaner {
         origLink = FbLinkCleaner.generateOrigLink(aHref);
       }
       this.setupRow(origLink);
+    } else if (e.target.tagName === 'span') {
+
     }
   }
 
@@ -108,8 +110,16 @@ class FbLinkCleaner {
    */
   cancelClickOnMiddleClick(e) {
     if (!this.dHidden && e.button === 1) {
-      e.preventDefault();
+      FbLinkCleaner.stopEvent(e);
     }
+  }
+
+  /**
+   * Prevent an event from its default action
+   * @param e {Event}
+   */
+  static stopEvent(e) {
+    e.preventDefault();
   }
 
   /**
@@ -311,7 +321,7 @@ class FbLinkCleaner {
     const mainDivWidth = mainDiv.offsetWidth;
     // eslint-disable-next-line no-param-reassign
     headerDiv.onmousedown = (e) => {
-      e.preventDefault();
+      FbLinkCleaner.stopEvent(e);
       // get the mouse cursor position at startup:
       currentX = e.clientX;
       currentY = e.clientY;
@@ -321,7 +331,7 @@ class FbLinkCleaner {
       };
       // call a function whenever the cursor moves:
       document.onmousemove = (e2) => {
-        e2.preventDefault();
+        FbLinkCleaner.stopEvent(e2);
         // calculate the new cursor position:
         newX = currentX - e2.clientX;
         newY = currentY - e2.clientY;
@@ -401,7 +411,8 @@ class FbLinkCleaner {
    * Registers event listeners for mousedown and click
    */
   registerEventListeners() {
-    document.addEventListener('mousedown', this.getOriginalLinkOnMiddleClick.bind(this));
+    // eslint-disable-next-line no-extra-boolean-cast
+    document.addEventListener(!!window.chrome ? 'auxclick' : 'mousedown', this.getOriginalLinkOnMiddleClick.bind(this));
     document.addEventListener('click', this.cancelClickOnMiddleClick);
     this.eventsRegistered = true;
   }
