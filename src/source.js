@@ -21,21 +21,30 @@ class FbLinkCleaner {
    */
   createFooterDiv() {
     const footerDiv = FbLinkCleaner.newDiv('footer df');
-    this.settingsdiv = FbLinkCleaner.newDiv('dn');
-    this.settingsdiv.innerHTML = '<div><input type="checkbox">Auto-clean</div>'
+    this.settingsDiv = FbLinkCleaner.newDiv('dn');
+    this.settingsDiv.innerHTML = '<div><input type="checkbox">Auto-clean</div>'
       + '<div><input type="checkbox">Auto-open</div>'
       + '<div><input type="checkbox">Prevent dupes</div>';
     const clearAllDiv = FbLinkCleaner.newDiv('df jcsb');
+    const footerSettingsCont = FbLinkCleaner.newDiv('df');
+    const unknownParamsDiv = FbLinkCleaner.newDiv('df upDiv');
+    const tooltipSpan = document.createElement('span');
+    tooltipSpan.className = 'tooltip';
+    tooltipSpan.innerText = 'Unknown params! Check the console';
+    this.unknownParamsNumberDiv = FbLinkCleaner.newDiv('');
+    this.unknownParamsNumberDiv.innerText = '0';
+    unknownParamsDiv.append(this.unknownParamsNumberDiv, tooltipSpan);
     const settingsIconDiv = FbLinkCleaner.newDiv('setI');
     settingsIconDiv.onclick = () => {
-      const div = window.fblnkcln.settingsdiv;
+      const div = window.fblnkcln.settingsDiv;
       // eslint-disable-next-line no-unused-expressions
       div.classList.contains('dn') ? div.className = 'df' : div.className = 'dn';
     };
     settingsIconDiv.innerHTML = '<svg class="svg-icon df" viewBox="0 0 20 20"><path d="M6.176,7.241V6.78c0-0.221-0.181-0.402-0.402-0.402c-0.221,0-0.403,0.181-0.403,0.402v0.461C4.79,7.416,4.365,7.955,4.365,8.591c0,0.636,0.424,1.175,1.006,1.35v3.278c0,0.222,0.182,0.402,0.403,0.402c0.222,0,0.402-0.181,0.402-0.402V9.941c0.582-0.175,1.006-0.714,1.006-1.35C7.183,7.955,6.758,7.416,6.176,7.241 M5.774,9.195c-0.332,0-0.604-0.272-0.604-0.604c0-0.332,0.272-0.604,0.604-0.604c0.332,0,0.604,0.272,0.604,0.604C6.377,8.923,6.105,9.195,5.774,9.195 M10.402,10.058V6.78c0-0.221-0.181-0.402-0.402-0.402c-0.222,0-0.402,0.181-0.402,0.402v3.278c-0.582,0.175-1.006,0.714-1.006,1.35c0,0.637,0.424,1.175,1.006,1.351v0.461c0,0.222,0.181,0.402,0.402,0.402c0.221,0,0.402-0.181,0.402-0.402v-0.461c0.582-0.176,1.006-0.714,1.006-1.351C11.408,10.772,10.984,10.233,10.402,10.058M10,12.013c-0.333,0-0.604-0.272-0.604-0.604S9.667,10.805,10,10.805c0.332,0,0.604,0.271,0.604,0.604S10.332,12.013,10,12.013M14.629,8.448V6.78c0-0.221-0.182-0.402-0.403-0.402c-0.221,0-0.402,0.181-0.402,0.402v1.668c-0.581,0.175-1.006,0.714-1.006,1.35c0,0.636,0.425,1.176,1.006,1.351v2.07c0,0.222,0.182,0.402,0.402,0.402c0.222,0,0.403-0.181,0.403-0.402v-2.07c0.581-0.175,1.006-0.715,1.006-1.351C15.635,9.163,15.21,8.624,14.629,8.448 M14.226,10.402c-0.331,0-0.604-0.272-0.604-0.604c0-0.332,0.272-0.604,0.604-0.604c0.332,0,0.604,0.272,0.604,0.604C14.83,10.13,14.558,10.402,14.226,10.402 M17.647,3.962H2.353c-0.221,0-0.402,0.181-0.402,0.402v11.27c0,0.222,0.181,0.402,0.402,0.402h15.295c0.222,0,0.402-0.181,0.402-0.402V4.365C18.05,4.144,17.869,3.962,17.647,3.962 M17.245,15.232H2.755V4.768h14.49V15.232z"></path></svg>';
     this.clearbtn = FbLinkCleaner.newButton('btn clearallbtn', 'Clear all rows', 'Clear all', FbLinkCleaner.clearAllBtnFn);
-    clearAllDiv.append(settingsIconDiv, this.clearbtn);
-    footerDiv.append(this.settingsdiv, clearAllDiv);
+    footerSettingsCont.append(settingsIconDiv, unknownParamsDiv);
+    clearAllDiv.append(footerSettingsCont, this.clearbtn);
+    footerDiv.append(this.settingsDiv, clearAllDiv);
     return footerDiv;
   }
 
@@ -69,6 +78,10 @@ class FbLinkCleaner {
       + '#fblnkcln .headerTitle{padding:0 5px;color:tomato !important}'
       + '#fblnkcln .body{flex-direction:column;overflow:auto;scrollbar-color:tomato transparent;scrollbar-width:thin}'
       + '#fblnkcln .footer{flex-direction:column;margin-right:15px}'
+      + '#fblnkcln .upDiv{-moz-user-select:none;user-select:none;display:none;color:rgba(255,255,0,0.7)!important;font-size:0.6rem;border:1px solid rgba(255,255,0,0.6);box-sizing:border-box;border-radius:1rem;width:1rem;justify-content:center;align-items:center;margin:2px}'
+      + '#fblnkcln .upDiv .tooltip{visibility:hidden;opacity:0;width:190px;background-color:rgb(53,53,53);text-align:center;padding:3px 0;position:absolute;z-index:301;left:45px;border-radius:4px;transition:opacity 0.6s}'
+      + '#fblnkcln .upDiv .tooltip::after{content:"";position:absolute;top:50%;right:100%;margin-top:-5px;border-width:5px;border-style:solid;border-color:transparent rgb(53,53,53) transparent transparent}'
+      + '#fblnkcln .upDiv:hover .tooltip{visibility:visible;opacity:1}'
       + '#fblnkcln .setI:hover{background-color:rgba(233,233,233,0.2)}'
       + '#fblnkcln .setI:active{background-color:rgba(180,180,180,0.2)}'
       + '#fblnkcln .closebtn{border:none !important;padding:0 5px !important}'
@@ -88,38 +101,48 @@ class FbLinkCleaner {
    * @param {MouseEvent} e
    */
   getOriginalLinkOnMiddleClick(e) {
-    if (!this.dHidden && e.button === 1 && e.target.tagName === 'A') {
-      FbLinkCleaner.stopEvent(e);
-      const aHref = new URL(e.target.href);
-      const uParam = aHref.searchParams.get('u');
-      let origLink;
-      if (uParam) {
-        origLink = FbLinkCleaner.generateOrigLink(new URL(uParam));
-      } else {
-        origLink = FbLinkCleaner.generateOrigLink(aHref);
-      }
-      this.setupRow(origLink);
-    } else if (e.target.tagName === 'span') {
-
-    }
-  }
-
-  /**
-   * Cancels click event on middle click
-   * @param {MouseEvent} e
-   */
-  cancelClickOnMiddleClick(e) {
     if (!this.dHidden && e.button === 1) {
       FbLinkCleaner.stopEvent(e);
+      try {
+        if (e.target.tagName === 'A') {
+          this.setupRow(FbLinkCleaner.getOrigLinkFromHTMLLinkElement(e.target));
+        } else if (e.target.tagName === 'SPAN') {
+          const span = e.target;
+          if (span.parentElement.tagName === 'ABBR' || span.parentElement.tagName === 'DIV') {
+            if (span.parentElement.parentElement.tagName === 'A') {
+              this.setupRow(FbLinkCleaner
+                .getOrigLinkFromHTMLLinkElement(span.parentElement.parentElement));
+            } else {
+              throw new Error('Unsupported');
+            }
+          } else {
+            throw new Error('Unsupported');
+          }
+        } else {
+          throw new Error('Unsupported');
+        }
+      } catch (err) {
+        console.error(err);
+        console.log(err.target);
+      }
     }
   }
 
   /**
-   * Prevent an event from its default action
-   * @param e {Event}
+   * Gets the original link from a link element
+   * @param {HTMLLinkElement} element the link element
+   * @returns {string} the generated original link
    */
-  static stopEvent(e) {
-    e.preventDefault();
+  static getOrigLinkFromHTMLLinkElement(element) {
+    const aHref = new URL(element.href);
+    const uParam = aHref.searchParams.get('u');
+    let origLink;
+    if (uParam) {
+      origLink = FbLinkCleaner.generateOrigLinkFromUrl(new URL(uParam));
+    } else {
+      origLink = FbLinkCleaner.generateOrigLinkFromUrl(aHref);
+    }
+    return origLink;
   }
 
   /**
@@ -127,25 +150,52 @@ class FbLinkCleaner {
    * @param {URL} url the URL to generate from
    * @returns {string} the original link without fbclid
    */
-  static generateOrigLink(url) {
+  static generateOrigLinkFromUrl(url) {
     let baseUrl = `${url.protocol}//${url.hostname}${url.pathname}`;
     baseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
     if (url.search.lastIndexOf(fbclid) > 0) {
       baseUrl += `${url.search.substring(0, (url.search.lastIndexOf(fbclid) - 1))}`;
       return baseUrl;
     }
-    const pn = url.pathname;
-    if (pn.indexOf('photo.php') > 0) {
-      return `${baseUrl}?fbid=${url.searchParams.get('fbid')}`;
-    }
-    if (pn.indexOf('profile.php') > 0) {
-      return `${baseUrl}?id=${url.searchParams.get('id')}`;
-    }
-    if (pn.indexOf('mutual_friends') > 0) {
-      return `${baseUrl}?uid=${url.searchParams.get('uid')}`;
-    }
-    console.log('No cleaning done, returning base URL');
-    return baseUrl;
+    const wl = ['act', 'app_id', 'av', 'campaign_id', 'category', 'crisis_id', 'dialog_type', 'faq', 'fbid', 'filter_set', 'force-refresh', 'id', 'is_monthly_subscription', 'launch_creation', 'loc', 'locale', 'modal', 'page', 'page_id', 's', 'section', 'set', 'sk', 'tab', 'tag', 'type', 'uid', 'view'];
+    const wle = ['suggestion_token'];
+    const bl = ['__tn__', '__xts__', 'acontext', 'action_history', 'comment_tracking', 'cref', 'discovery_session_id', 'donate_ref', 'eid', 'entry_point', 'epa', 'external_ref', 'extra_1', 'fbclid', 'fbsource', 'feedback_referrer', 'feedback_source', 'fref', 'from', 'from_bookmark', 'ft_ent_identifier', 'group_sell_ref', 'hc_location', 'hc_ref', 'href', 'listing_type', 'log_filter', 'ls_ref', 'lst', 'offerx_bypass_snowlift', 'offerx_id', 'offerx_referrer', 'orig_src', 'p[0]', 'par', 'parent_fbid', 'placement', 'player_origin', 'privacy_source', 'redirected_for_ios', 'redirect_to_gameroom', 'ref', 'ref_mechanism', 'ref_surface', 'referrer_id', 'referrer_profile_id', 'referrer_type', 'share_source', 'source', 'source_data', 'source_data%5Bsource_id%5D', 'source_data%5Bsource_name%5D', 'source_id', 'source_ref', 'spotlight', 'waterfall_session_id'];
+    // contains source, ref, __
+    let paramN = 1;
+    let paramString = '';
+    url.searchParams.forEach((paramValue, paramKey) => {
+      let tempParamValue = '';
+      // In whitelist
+      if (wl.indexOf(paramKey) >= 0) {
+        tempParamValue = FbLinkCleaner.generateSearchParam(paramKey, paramValue);
+        // in whitelist with encoding
+      } else if (wle.indexOf(paramKey) >= 0) {
+        tempParamValue = FbLinkCleaner.generateSearchParam(paramKey, paramValue, true);
+        // not in blacklist
+      } else if (bl.indexOf(paramKey) === -1) {
+        console.log(`Unknown param removed: ${paramKey} from ${url}`);
+        const upd = window.fblnkcln.unknownParamsNumberDiv;
+        upd.innerText = parseInt(upd.innerText, 10) + 1;
+        upd.parentElement.style.display = 'flex';
+      }
+      if (tempParamValue !== '') {
+        paramString += `${paramN === 1 ? '?' : '&'}${tempParamValue}`;
+        paramN += 1;
+      }
+    });
+    paramN = 1;
+    return `${baseUrl}${paramString}`;
+  }
+
+  /**
+   * Generates a search parameter string
+   * @param {string} param the param name
+   * @param {string} value the param value
+   * @param {boolean} encode encode the value of the param
+   * @returns {string} the generated search param string
+   */
+  static generateSearchParam(param, value, encode = false) {
+    return `${param}=${encode ? encodeURIComponent(value) : value}`;
   }
 
   /**
@@ -187,6 +237,24 @@ class FbLinkCleaner {
 
   hideClearAllBtn() {
     this.clearbtn.style.visibility = 'hidden';
+  }
+
+  /**
+   * Cancels click event on middle click
+   * @param {MouseEvent} e
+   */
+  cancelClickOnMiddleClick(e) {
+    if (!this.dHidden && e.button === 1) {
+      FbLinkCleaner.stopEvent(e);
+    }
+  }
+
+  /**
+   * Prevent an event from its default action
+   * @param e {Event}
+   */
+  static stopEvent(e) {
+    e.preventDefault();
   }
 
   /**
