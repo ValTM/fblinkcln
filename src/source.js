@@ -13,6 +13,7 @@ class FbLinkCleaner {
     this.bodydiv = FbLinkCleaner.newDiv('body df bb');
     const footerDiv = this.createFooterDiv();
     this.main.append(headerDiv, this.bodydiv, footerDiv);
+    this.uplist = [];
   }
 
   /**
@@ -98,32 +99,21 @@ class FbLinkCleaner {
 
   /**
    * Gets the original link from the facebook A element when clicked with the scroll wheel
-   * @param {MouseEvent} e
+   * @param {MouseEvent} mouseEvent
    */
-  getOriginalLinkOnMiddleClick(e) {
-    if (!this.dHidden && e.button === 1) {
-      FbLinkCleaner.stopEvent(e);
-      try {
-        if (e.target.tagName === 'A') {
-          this.setupRow(FbLinkCleaner.getOrigLinkFromHTMLLinkElement(e.target));
-        } else if (e.target.tagName === 'SPAN') {
-          const span = e.target;
-          if (span.parentElement.tagName === 'ABBR' || span.parentElement.tagName === 'DIV') {
-            if (span.parentElement.parentElement.tagName === 'A') {
-              this.setupRow(FbLinkCleaner
-                .getOrigLinkFromHTMLLinkElement(span.parentElement.parentElement));
-            } else {
-              throw new Error('Unsupported');
-            }
-          } else {
-            throw new Error('Unsupported');
-          }
-        } else {
-          throw new Error('Unsupported');
-        }
-      } catch (err) {
-        console.error(err);
-        console.log(err.target);
+  getOriginalLinkOnMiddleClick(mouseEvent) {
+    if (!this.dHidden && mouseEvent.button === 1) {
+      FbLinkCleaner.stopEvent(mouseEvent);
+      let linkElem;
+      if (mouseEvent.target.tagName === 'A') {
+        linkElem = mouseEvent.target;
+      } else {
+        linkElem = mouseEvent.target.closest('a');
+      }
+      if (linkElem) {
+        this.setupRow(FbLinkCleaner.getOrigLinkFromHTMLLinkElement(linkElem));
+      } else {
+        console.error('No link element found!');
       }
     }
   }
@@ -157,9 +147,9 @@ class FbLinkCleaner {
       baseUrl += `${url.search.substring(0, (url.search.lastIndexOf(fbclid) - 1))}`;
       return baseUrl;
     }
-    const wl = ['act', 'app_id', 'av', 'campaign_id', 'category', 'crisis_id', 'dialog_type', 'faq', 'fbid', 'filter_set', 'force-refresh', 'id', 'is_monthly_subscription', 'launch_creation', 'loc', 'locale', 'modal', 'page', 'page_id', 's', 'section', 'set', 'sk', 'tab', 'tag', 'type', 'uid', 'view'];
+    const wl = ['act', 'app_id', 'av', 'campaign_id', 'category', 'comment_id', 'crisis_id', 'dialog_type', 'faq', 'fbid', 'filter_set', 'filters', 'force-refresh', 'id', 'is_monthly_subscription', 'launch_creation', 'loc', 'locale', 'modal', 'page', 'page_id', 's', 'section', 'set', 'sk', 'tab', 'tag', 'type', 'uid', 'view'];
     const wle = ['suggestion_token'];
-    const bl = ['__tn__', '__xts__', 'acontext', 'action_history', 'comment_tracking', 'cref', 'discovery_session_id', 'donate_ref', 'eid', 'entry_point', 'epa', 'external_ref', 'extra_1', 'fbclid', 'fbsource', 'feedback_referrer', 'feedback_source', 'fref', 'from', 'from_bookmark', 'ft_ent_identifier', 'group_sell_ref', 'hc_location', 'hc_ref', 'href', 'listing_type', 'log_filter', 'ls_ref', 'lst', 'offerx_bypass_snowlift', 'offerx_id', 'offerx_referrer', 'orig_src', 'p[0]', 'par', 'parent_fbid', 'placement', 'player_origin', 'privacy_source', 'redirected_for_ios', 'redirect_to_gameroom', 'ref', 'ref_mechanism', 'ref_surface', 'referrer_id', 'referrer_profile_id', 'referrer_type', 'share_source', 'source', 'source_data', 'source_data%5Bsource_id%5D', 'source_data%5Bsource_name%5D', 'source_id', 'source_ref', 'spotlight', 'waterfall_session_id'];
+    const bl = ['__tn__', '__xts__', '__xts__[0]', 'acontext', 'action_history', 'appid', 'comment_tracking', 'cref', 'discovery_session_id', 'donate_ref', 'dti', 'eid', 'entry_point', 'epa', 'external_ref', 'extra_1', 'f', 'fb_ref', 'fbclid', 'fbsource', 'feed_story_type', 'feedback_referrer', 'feedback_source', 'fref', 'from', 'from_bookmark', 'ft_ent_identifier', 'group_sell_ref', 'has_source', 'hc_location', 'hc_ref', 'href', 'listing_type', 'log_filter', 'ls_ref', 'lst', 'offerx_bypass_snowlift', 'offerx_id', 'offerx_referrer', 'orig_src', 'p[0]', 'p[1]', 'par', 'parent_fbid', 'placement', 'player_origin', 'privacy_source', 'redirect_to_gameroom', 'redirected_for_ios', 'ref', 'ref_mechanism', 'ref_newsfeed_story_type', 'ref_surface', 'referrer_id', 'referrer_profile_id', 'referrer_type', 'share_source', 'share_source_type', 'source', 'source_data', 'source_data%5Bsource_id%5D', 'source_data%5Bsource_name%5D', 'source_id', 'source_newsfeed_story_type', 'source_ref', 'spotlight', 'waterfall_session_id'];
     // contains source, ref, __
     let paramN = 1;
     let paramString = '';
@@ -173,10 +163,13 @@ class FbLinkCleaner {
         tempParamValue = FbLinkCleaner.generateSearchParam(paramKey, paramValue, true);
         // not in blacklist
       } else if (bl.indexOf(paramKey) === -1) {
-        console.log(`Unknown param removed: ${paramKey} from ${url}`);
-        const upd = window.fblnkcln.unknownParamsNumberDiv;
-        upd.innerText = parseInt(upd.innerText, 10) + 1;
-        upd.parentElement.style.display = 'flex';
+        if (window.fblnkcln.uplist.indexOf(paramKey) === -1) {
+          console.log(`Unknown param removed: ${paramKey} from ${url}`);
+          window.fblnkcln.uplist.push(paramKey);
+          const upd = window.fblnkcln.unknownParamsNumberDiv;
+          upd.innerText = parseInt(upd.innerText, 10) + 1;
+          upd.parentElement.style.display = 'flex';
+        }
       }
       if (tempParamValue !== '') {
         paramString += `${paramN === 1 ? '?' : '&'}${tempParamValue}`;
