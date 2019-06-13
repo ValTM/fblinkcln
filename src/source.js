@@ -1,8 +1,9 @@
-const fbclid = 'fbclid';
-
 class FbLinkCleaner {
   constructor() {
     window.fblnkcln = this;
+    this.wl = ['act', 'app_id', 'av', 'campaign_id', 'category', 'comment_id', 'crisis_id', 'dialog_type', 'faq', 'fbid', 'filter_set', 'filters', 'force-refresh', 'id', 'is_monthly_subscription', 'launch_creation', 'loc', 'locale', 'modal', 'page', 'page_id', 's', 'section', 'set', 'sk', 'tab', 'tag', 'type', 'uid', 'view'];
+    this.wle = ['suggestion_token'];
+    this.bl = ['__tn__', '__xts__', '__xts__[0]', 'acontext', 'action_history', 'appid', 'comment_tracking', 'cref', 'discovery_session_id', 'donate_ref', 'dti', 'eid', 'entry_point', 'epa', 'external_ref', 'extra_1', 'f', 'fb_ref', 'fbclid', 'fbsource', 'feed_story_type', 'feedback_referrer', 'feedback_source', 'fref', 'from', 'from_bookmark', 'ft_ent_identifier', 'group_sell_ref', 'has_source', 'hc_location', 'hc_ref', 'href', 'listing_type', 'log_filter', 'ls_ref', 'lst', 'offerx_bypass_snowlift', 'offerx_id', 'offerx_referrer', 'orig_src', 'p[0]', 'p[1]', 'par', 'parent_fbid', 'placement', 'player_origin', 'privacy_source', 'redirect_to_gameroom', 'redirected_for_ios', 'ref', 'ref_mechanism', 'ref_newsfeed_story_type', 'ref_surface', 'referrer_id', 'referrer_profile_id', 'referrer_type', 'share_source', 'share_source_type', 'source', 'source_data', 'source_data%5Bsource_id%5D', 'source_data%5Bsource_name%5D', 'source_id', 'source_newsfeed_story_type', 'source_ref', 'spotlight', 'waterfall_session_id'];
     FbLinkCleaner.appendStyles();
     // Generate all components
     const mainDiv = FbLinkCleaner.newDiv('');
@@ -14,53 +15,6 @@ class FbLinkCleaner {
     const footerDiv = this.createFooterDiv();
     this.main.append(headerDiv, this.bodydiv, footerDiv);
     this.uplist = [];
-  }
-
-  /**
-   * Creates the footer div with all its elements
-   * @returns {HTMLDivElement} the generated footer div
-   */
-  createFooterDiv() {
-    const footerDiv = FbLinkCleaner.newDiv('footer df');
-    this.settingsDiv = FbLinkCleaner.newDiv('dn');
-    this.settingsDiv.innerHTML = '<div><input type="checkbox">Auto-clean</div>'
-      + '<div><input type="checkbox">Auto-open</div>'
-      + '<div><input type="checkbox">Prevent dupes</div>';
-    const clearAllDiv = FbLinkCleaner.newDiv('df jcsb');
-    const footerSettingsCont = FbLinkCleaner.newDiv('df');
-    const unknownParamsDiv = FbLinkCleaner.newDiv('df upDiv');
-    const tooltipSpan = document.createElement('span');
-    tooltipSpan.className = 'tooltip';
-    tooltipSpan.innerText = 'Unknown params! Check the console';
-    this.unknownParamsNumberDiv = FbLinkCleaner.newDiv('');
-    this.unknownParamsNumberDiv.innerText = '0';
-    unknownParamsDiv.append(this.unknownParamsNumberDiv, tooltipSpan);
-    const settingsIconDiv = FbLinkCleaner.newDiv('setI');
-    settingsIconDiv.onclick = () => {
-      const div = window.fblnkcln.settingsDiv;
-      // eslint-disable-next-line no-unused-expressions
-      div.classList.contains('dn') ? div.className = 'df' : div.className = 'dn';
-    };
-    settingsIconDiv.innerHTML = '<svg class="svg-icon df" viewBox="0 0 20 20"><path d="M6.176,7.241V6.78c0-0.221-0.181-0.402-0.402-0.402c-0.221,0-0.403,0.181-0.403,0.402v0.461C4.79,7.416,4.365,7.955,4.365,8.591c0,0.636,0.424,1.175,1.006,1.35v3.278c0,0.222,0.182,0.402,0.403,0.402c0.222,0,0.402-0.181,0.402-0.402V9.941c0.582-0.175,1.006-0.714,1.006-1.35C7.183,7.955,6.758,7.416,6.176,7.241 M5.774,9.195c-0.332,0-0.604-0.272-0.604-0.604c0-0.332,0.272-0.604,0.604-0.604c0.332,0,0.604,0.272,0.604,0.604C6.377,8.923,6.105,9.195,5.774,9.195 M10.402,10.058V6.78c0-0.221-0.181-0.402-0.402-0.402c-0.222,0-0.402,0.181-0.402,0.402v3.278c-0.582,0.175-1.006,0.714-1.006,1.35c0,0.637,0.424,1.175,1.006,1.351v0.461c0,0.222,0.181,0.402,0.402,0.402c0.221,0,0.402-0.181,0.402-0.402v-0.461c0.582-0.176,1.006-0.714,1.006-1.351C11.408,10.772,10.984,10.233,10.402,10.058M10,12.013c-0.333,0-0.604-0.272-0.604-0.604S9.667,10.805,10,10.805c0.332,0,0.604,0.271,0.604,0.604S10.332,12.013,10,12.013M14.629,8.448V6.78c0-0.221-0.182-0.402-0.403-0.402c-0.221,0-0.402,0.181-0.402,0.402v1.668c-0.581,0.175-1.006,0.714-1.006,1.35c0,0.636,0.425,1.176,1.006,1.351v2.07c0,0.222,0.182,0.402,0.402,0.402c0.222,0,0.403-0.181,0.403-0.402v-2.07c0.581-0.175,1.006-0.715,1.006-1.351C15.635,9.163,15.21,8.624,14.629,8.448 M14.226,10.402c-0.331,0-0.604-0.272-0.604-0.604c0-0.332,0.272-0.604,0.604-0.604c0.332,0,0.604,0.272,0.604,0.604C14.83,10.13,14.558,10.402,14.226,10.402 M17.647,3.962H2.353c-0.221,0-0.402,0.181-0.402,0.402v11.27c0,0.222,0.181,0.402,0.402,0.402h15.295c0.222,0,0.402-0.181,0.402-0.402V4.365C18.05,4.144,17.869,3.962,17.647,3.962 M17.245,15.232H2.755V4.768h14.49V15.232z"></path></svg>';
-    this.clearbtn = FbLinkCleaner.newButton('btn clearallbtn', 'Clear all rows', 'Clear all', FbLinkCleaner.clearAllBtnFn);
-    footerSettingsCont.append(settingsIconDiv, unknownParamsDiv);
-    clearAllDiv.append(footerSettingsCont, this.clearbtn);
-    footerDiv.append(this.settingsDiv, clearAllDiv);
-    return footerDiv;
-  }
-
-  /**
-   * Creates the header div with all its elements
-   * @returns {HTMLDivElement} the generated header div
-   */
-  createHeaderDiv() {
-    const headerDiv = FbLinkCleaner.newDiv('header df bb jcsb');
-    const headerTitleDiv = FbLinkCleaner.newDiv('headerTitle');
-    headerTitleDiv.innerText = 'Clean links';
-    headerDiv.appendChild(headerTitleDiv);
-    headerDiv.appendChild(FbLinkCleaner.newButton('btn closebtn', 'Close', 'X', FbLinkCleaner.closeBtnFn));
-    this.setupDialogDrag(headerDiv);
-    return headerDiv;
   }
 
   /**
@@ -83,10 +37,13 @@ class FbLinkCleaner {
       + '#fblnkcln .upDiv .tooltip{visibility:hidden;opacity:0;width:190px;background-color:rgb(53,53,53);text-align:center;padding:3px 0;position:absolute;z-index:301;left:45px;border-radius:4px;transition:opacity 0.6s}'
       + '#fblnkcln .upDiv .tooltip::after{content:"";position:absolute;top:50%;right:100%;margin-top:-5px;border-width:5px;border-style:solid;border-color:transparent rgb(53,53,53) transparent transparent}'
       + '#fblnkcln .upDiv:hover .tooltip{visibility:visible;opacity:1}'
+      + '#fblnkcln .setI{cursor:pointer}'
       + '#fblnkcln .setI:hover{background-color:rgba(233,233,233,0.2)}'
       + '#fblnkcln .setI:active{background-color:rgba(180,180,180,0.2)}'
       + '#fblnkcln .closebtn{border:none !important;padding:0 5px !important}'
       + '#fblnkcln .clearallbtn{padding:0 3px !important;visibility:hidden}'
+      + '#fblnkcln .rowCount{align-self:center;font-size:0.6rem}'
+      + '#fblnkcln .rowCount > span{padding-left:2px}'
       + '#fblnkcln .rowwrapper{background:#3b3b4b}'
       + '#fblnkcln .rowwrapper:nth-child(2n){background:#2c2c46}'
       + '#fblnkcln .lnkwrapper{padding-left:5px;overflow:hidden;color:#f5f5f5 !important;align-items:center}'
@@ -95,6 +52,131 @@ class FbLinkCleaner {
       + '#fblnkcln .btn{border:1px solid;padding:2px 5px;cursor:pointer;margin:1px;color:#fff;background:transparent;opacity:.8}';
     css.appendChild(document.createTextNode(styles));
     document.querySelector('head').appendChild(css);
+  }
+
+  /**
+   * Creates the footer div with all its elements
+   * @returns {HTMLDivElement} the generated footer div
+   */
+  createFooterDiv() {
+    const footerSettingsDiv = FbLinkCleaner.newDiv('df');
+    footerSettingsDiv.append(FbLinkCleaner.createSettingsIcon(), this.createUnknownParamsDiv());
+    const footerContentDiv = FbLinkCleaner.newDiv('df jcsb');
+    footerContentDiv.append(footerSettingsDiv, this.createRowCtlDiv());
+    const footerDiv = FbLinkCleaner.newDiv('footer df');
+    footerDiv.append(this.createSettingsDiv(), footerContentDiv);
+    return footerDiv;
+  }
+
+  /**
+   * Creates the row controls div
+   * @returns {HTMLDivElement}
+   */
+  createRowCtlDiv() {
+    const rowCtlDiv = FbLinkCleaner.newDiv('df');
+    const rowCountDiv = this.createRowCountDiv();
+    rowCtlDiv.append(rowCountDiv, this.createClearBtn());
+    return rowCtlDiv;
+  }
+
+  /**
+   * Creates the div that holds the total row count
+   * @returns {HTMLDivElement}
+   */
+  createRowCountDiv() {
+    const rowCountDiv = FbLinkCleaner.newDiv('headerTitle rowCount dn');
+    rowCountDiv.append(FbLinkCleaner.newSpanWithText('Total links: '),
+      this.createTotalLinksCountSpan());
+    return rowCountDiv;
+  }
+
+  /**
+   * Creates the total links counter span
+   * @returns {HTMLSpanElement}
+   */
+  createTotalLinksCountSpan() {
+    this.totalLinksCountSpan = FbLinkCleaner.newSpanWithText('0');
+    return this.totalLinksCountSpan;
+  }
+
+  /**
+   * Creats the clear all button
+   * @returns {HTMLButtonElement}
+   */
+  createClearBtn() {
+    this.clearbtn = FbLinkCleaner.newButton('btn clearallbtn', 'Clear all rows', 'Clear all', FbLinkCleaner.clearAllBtnFn);
+    return this.clearbtn;
+  }
+
+  /**
+   * Creates the div element that holds the warnings count about unknown params and tooltip
+   * @returns {HTMLDivElement}
+   */
+  createUnknownParamsDiv() {
+    const unknownParamsDiv = FbLinkCleaner.newDiv('df upDiv');
+    unknownParamsDiv.append(this.createUnknownParamsNumberDiv(), FbLinkCleaner.createTooltipSpan('Unknown params! Check the console'));
+    return unknownParamsDiv;
+  }
+
+  /**
+   * Creates a settings icon in a div
+   * @returns {HTMLDivElement}
+   */
+  static createSettingsIcon() {
+    const settingsIconDiv = FbLinkCleaner.newDiv('setI');
+    settingsIconDiv.onclick = FbLinkCleaner.toggleSettingsDiv;
+    settingsIconDiv.innerHTML = '<svg class="svg-icon df" viewBox="0 0 20 20"><path d="M6.176,7.241V6.78c0-0.221-0.181-0.402-0.402-0.402c-0.221,0-0.403,0.181-0.403,0.402v0.461C4.79,7.416,4.365,7.955,4.365,8.591c0,0.636,0.424,1.175,1.006,1.35v3.278c0,0.222,0.182,0.402,0.403,0.402c0.222,0,0.402-0.181,0.402-0.402V9.941c0.582-0.175,1.006-0.714,1.006-1.35C7.183,7.955,6.758,7.416,6.176,7.241 M5.774,9.195c-0.332,0-0.604-0.272-0.604-0.604c0-0.332,0.272-0.604,0.604-0.604c0.332,0,0.604,0.272,0.604,0.604C6.377,8.923,6.105,9.195,5.774,9.195 M10.402,10.058V6.78c0-0.221-0.181-0.402-0.402-0.402c-0.222,0-0.402,0.181-0.402,0.402v3.278c-0.582,0.175-1.006,0.714-1.006,1.35c0,0.637,0.424,1.175,1.006,1.351v0.461c0,0.222,0.181,0.402,0.402,0.402c0.221,0,0.402-0.181,0.402-0.402v-0.461c0.582-0.176,1.006-0.714,1.006-1.351C11.408,10.772,10.984,10.233,10.402,10.058M10,12.013c-0.333,0-0.604-0.272-0.604-0.604S9.667,10.805,10,10.805c0.332,0,0.604,0.271,0.604,0.604S10.332,12.013,10,12.013M14.629,8.448V6.78c0-0.221-0.182-0.402-0.403-0.402c-0.221,0-0.402,0.181-0.402,0.402v1.668c-0.581,0.175-1.006,0.714-1.006,1.35c0,0.636,0.425,1.176,1.006,1.351v2.07c0,0.222,0.182,0.402,0.402,0.402c0.222,0,0.403-0.181,0.403-0.402v-2.07c0.581-0.175,1.006-0.715,1.006-1.351C15.635,9.163,15.21,8.624,14.629,8.448 M14.226,10.402c-0.331,0-0.604-0.272-0.604-0.604c0-0.332,0.272-0.604,0.604-0.604c0.332,0,0.604,0.272,0.604,0.604C14.83,10.13,14.558,10.402,14.226,10.402 M17.647,3.962H2.353c-0.221,0-0.402,0.181-0.402,0.402v11.27c0,0.222,0.181,0.402,0.402,0.402h15.295c0.222,0,0.402-0.181,0.402-0.402V4.365C18.05,4.144,17.869,3.962,17.647,3.962 M17.245,15.232H2.755V4.768h14.49V15.232z"></path></svg>';
+    return settingsIconDiv;
+  }
+
+  /**
+   * Toggles the settings div's class from dn to df and vice-versa to toggle the display attribute
+   * It also autoscrolls the body div to the bottom if it was scrolled that way already.
+   */
+  static toggleSettingsDiv() {
+    const div = window.fblnkcln.settingsDiv;
+    // eslint-disable-next-line no-unused-expressions
+    div.classList.contains('dn') ? div.className = 'df' : div.className = 'dn';
+    const bdiv = window.fblnkcln.bodydiv;
+    if (bdiv.scrollHeight - bdiv.scrollTop - bdiv.clientHeight < 1) {
+      bdiv.scrollTop = bdiv.scrollHeight - bdiv.clientHeight;
+    }
+  }
+
+  /**
+   * Creates the settings div with the checkboxes
+   * @returns {HTMLDivElement}
+   */
+  createSettingsDiv() {
+    this.settingsDiv = FbLinkCleaner.newDiv('dn');
+    this.settingsDiv.innerHTML = '<div><input type="checkbox">Auto-clean</div>'
+      + '<div><input type="checkbox">Auto-open</div>'
+      + '<div><input type="checkbox">Prevent dupes</div>';
+    return this.settingsDiv;
+  }
+
+  /**
+   * Creats the div that holds the unknown params count value
+   * @returns {HTMLDivElement}
+   */
+  createUnknownParamsNumberDiv() {
+    this.unknownParamsNumberDiv = FbLinkCleaner.newDiv('');
+    this.unknownParamsNumberDiv.innerText = '0';
+    return this.unknownParamsNumberDiv;
+  }
+
+  /**
+   * Creates the header div with all its elements
+   * @returns {HTMLDivElement} the generated header div
+   */
+  createHeaderDiv() {
+    const headerDiv = FbLinkCleaner.newDiv('header df bb jcsb');
+    const headerTitleDiv = FbLinkCleaner.newDiv('headerTitle');
+    headerTitleDiv.innerText = 'Clean links';
+    headerDiv.appendChild(headerTitleDiv);
+    headerDiv.appendChild(FbLinkCleaner.newButton('btn closebtn', 'Close', 'X', FbLinkCleaner.closeBtnFn));
+    this.setupDialogDrag(headerDiv);
+    return headerDiv;
   }
 
   /**
@@ -131,33 +213,27 @@ class FbLinkCleaner {
   }
 
   /**
-   * Generates the original link from an URL object
+   * Generates the original link from an URL object, removing all searchParams that are not in a
+   * whitelist
    * @param {URL} url the URL to generate from
-   * @returns {string} the original link without fbclid
+   * @returns {string} the original link
    */
   static generateOrigLinkFromUrl(url) {
     let baseUrl = `${url.protocol}//${url.hostname}${url.pathname}`;
     baseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
-    if (url.search.lastIndexOf(fbclid) > 0) {
-      baseUrl += `${url.search.substring(0, (url.search.lastIndexOf(fbclid) - 1))}`;
-      return baseUrl;
-    }
-    const wl = ['act', 'app_id', 'av', 'campaign_id', 'category', 'comment_id', 'crisis_id', 'dialog_type', 'faq', 'fbid', 'filter_set', 'filters', 'force-refresh', 'id', 'is_monthly_subscription', 'launch_creation', 'loc', 'locale', 'modal', 'page', 'page_id', 's', 'section', 'set', 'sk', 'tab', 'tag', 'type', 'uid', 'view'];
-    const wle = ['suggestion_token'];
-    const bl = ['__tn__', '__xts__', '__xts__[0]', 'acontext', 'action_history', 'appid', 'comment_tracking', 'cref', 'discovery_session_id', 'donate_ref', 'dti', 'eid', 'entry_point', 'epa', 'external_ref', 'extra_1', 'f', 'fb_ref', 'fbclid', 'fbsource', 'feed_story_type', 'feedback_referrer', 'feedback_source', 'fref', 'from', 'from_bookmark', 'ft_ent_identifier', 'group_sell_ref', 'has_source', 'hc_location', 'hc_ref', 'href', 'listing_type', 'log_filter', 'ls_ref', 'lst', 'offerx_bypass_snowlift', 'offerx_id', 'offerx_referrer', 'orig_src', 'p[0]', 'p[1]', 'par', 'parent_fbid', 'placement', 'player_origin', 'privacy_source', 'redirect_to_gameroom', 'redirected_for_ios', 'ref', 'ref_mechanism', 'ref_newsfeed_story_type', 'ref_surface', 'referrer_id', 'referrer_profile_id', 'referrer_type', 'share_source', 'share_source_type', 'source', 'source_data', 'source_data%5Bsource_id%5D', 'source_data%5Bsource_name%5D', 'source_id', 'source_newsfeed_story_type', 'source_ref', 'spotlight', 'waterfall_session_id'];
     // contains source, ref, __
     let paramN = 1;
     let paramString = '';
     url.searchParams.forEach((paramValue, paramKey) => {
       let tempParamValue = '';
       // In whitelist
-      if (wl.indexOf(paramKey) >= 0) {
+      if (window.fblnkcln.wl.indexOf(paramKey) >= 0) {
         tempParamValue = FbLinkCleaner.generateSearchParam(paramKey, paramValue);
         // in whitelist with encoding
-      } else if (wle.indexOf(paramKey) >= 0) {
+      } else if (window.fblnkcln.wle.indexOf(paramKey) >= 0) {
         tempParamValue = FbLinkCleaner.generateSearchParam(paramKey, paramValue, true);
         // not in blacklist
-      } else if (bl.indexOf(paramKey) === -1) {
+      } else if (window.fblnkcln.bl.indexOf(paramKey) === -1) {
         if (window.fblnkcln.uplist.indexOf(paramKey) === -1) {
           console.log(`Unknown param removed: ${paramKey} from ${url}`);
           window.fblnkcln.uplist.push(paramKey);
@@ -194,38 +270,57 @@ class FbLinkCleaner {
     const href = FbLinkCleaner.getOrigLinkFromHTMLLinkElement(linkElement);
     const rowWrapper = FbLinkCleaner.newDiv('rowwrapper df jcsb');
     const linkWrapper = FbLinkCleaner.newDiv('lnkwrapper df');
-    linkWrapper.appendChild(FbLinkCleaner.createLinkEl(href, linkElement.innerText));
+    linkWrapper.appendChild(FbLinkCleaner.createLinkEl(href, linkElement.innerText.replace('\n', ' ')
+      .trim()));
     const buttonsWrapper = FbLinkCleaner.newDiv('btnwrapper');
     const copyButton = FbLinkCleaner.newButton('btn', 'Copy to clipboard', 'COPY', FbLinkCleaner.getCopyLinkFn()
-      .bind({
-        href,
-        mainDiv: this.main,
-      }));
+      .bind({ href }));
     const openButton = FbLinkCleaner.newButton('btn', 'Open in new tab', 'OPEN', FbLinkCleaner.getOpenLinkFn()
-      .bind(href));
+      .bind({ href }));
     const delButton = FbLinkCleaner.newButton('btn', 'Delete row', 'X', FbLinkCleaner.getDeleteRowFn()
-      .bind({
-        bodydiv: this.bodydiv,
-        rowWrapper,
-      }));
+      .bind({ rowWrapper }));
     buttonsWrapper.append(copyButton, openButton, delButton);
     rowWrapper.appendChild(linkWrapper);
     rowWrapper.appendChild(buttonsWrapper);
     this.bodydiv.appendChild(rowWrapper);
     rowWrapper.scrollIntoView();
+    this.incrementTotalRowsCount();
     this.showClearAllBtn();
   }
 
-  /*
-   * BUTTON FUNCTIONS
+  /**
+   * Increments the total row count with one in the div
    */
+  incrementTotalRowsCount() {
+    const tlcs = this.totalLinksCountSpan;
+    tlcs.innerText = parseInt(tlcs.innerText, 10) + 1;
+    tlcs.parentElement.classList.remove('dn');
+    tlcs.parentElement.classList.add('df');
+  }
 
+  /**
+   * Resets the div with total rows counter
+   */
+  resetTotalRowsCount() {
+    const tlcs = this.totalLinksCountSpan;
+    this.totalLinksCountSpan.innerText = '0';
+    tlcs.parentElement.classList.remove('df');
+    tlcs.parentElement.classList.add('dn');
+  }
+
+  /**
+   * Shows the clear all button
+   */
   showClearAllBtn() {
     this.clearbtn.style.visibility = 'visible';
   }
 
+  /**
+   * Hides the clear all button
+   */
   hideClearAllBtn() {
     this.clearbtn.style.visibility = 'hidden';
+    this.resetTotalRowsCount();
   }
 
   /**
@@ -273,12 +368,12 @@ class FbLinkCleaner {
   static getCopyLinkFn() {
     return function copyLinkFn() {
       let textArea;
-      if (this.mainDiv.querySelector('textarea')) {
-        textArea = this.mainDiv.querySelector('textarea');
+      if (window.fblnkcln.main.querySelector('textarea')) {
+        textArea = window.fblnkcln.main.querySelector('textarea');
       } else {
         textArea = document.createElement('textarea');
         textArea.style.cssText = 'opacity:0;width:0px;height:0px;margin:0;padding:0;border:none;box-sizing:border-box;';
-        this.mainDiv.appendChild(textArea);
+        window.fblnkcln.main.appendChild(textArea);
       }
       textArea.value = this.href;
       textArea.focus();
@@ -293,7 +388,7 @@ class FbLinkCleaner {
    */
   static getOpenLinkFn() {
     return function openLink() {
-      window.open(this, '_blank');
+      window.open(this.href, '_blank');
     };
   }
 
@@ -303,8 +398,8 @@ class FbLinkCleaner {
    */
   static getDeleteRowFn() {
     return function deleteRow() {
-      this.bodydiv.removeChild(this.rowWrapper);
-      if (this.bodydiv.children.length === 0) {
+      window.fblnkcln.bodydiv.removeChild(this.rowWrapper);
+      if (window.fblnkcln.bodydiv.children.length === 0) {
         window.fblnkcln.hideClearAllBtn();
       }
     };
@@ -356,6 +451,30 @@ class FbLinkCleaner {
     const div = document.createElement('div');
     div.className = className;
     return div;
+  }
+
+  /**
+   * Creates a span with text
+   * @param {string} innerText the innerText of the span
+   * @returns {HTMLSpanElement}
+   */
+  static newSpanWithText(innerText) {
+    const textSpan = document.createElement('span');
+    textSpan.innerText = innerText;
+    return textSpan;
+  }
+
+  /**
+   * Creates a tooltip span element with default className of 'tooltip'
+   * @param innerText the text of the tooltip
+   * @param className the class of the tooltip element, by default 'tooltip'
+   * @returns {HTMLSpanElement} the generated tooltip span element
+   */
+  static createTooltipSpan(innerText, className = 'tooltip') {
+    const tooltipSpan = document.createElement('span');
+    tooltipSpan.className = className;
+    tooltipSpan.innerText = innerText;
+    return tooltipSpan;
   }
 
   /**
