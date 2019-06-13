@@ -104,14 +104,9 @@ class FbLinkCleaner {
   getOriginalLinkOnMiddleClick(mouseEvent) {
     if (!this.dHidden && mouseEvent.button === 1) {
       FbLinkCleaner.stopEvent(mouseEvent);
-      let linkElem;
-      if (mouseEvent.target.tagName === 'A') {
-        linkElem = mouseEvent.target;
-      } else {
-        linkElem = mouseEvent.target.closest('a');
-      }
-      if (linkElem) {
-        this.setupRow(FbLinkCleaner.getOrigLinkFromHTMLLinkElement(linkElem));
+      const linkElement = mouseEvent.target.tagName === 'A' ? mouseEvent.target : mouseEvent.target.closest('a');
+      if (linkElement) {
+        this.setupRow(linkElement);
       } else {
         console.error('No link element found!');
       }
@@ -120,11 +115,11 @@ class FbLinkCleaner {
 
   /**
    * Gets the original link from a link element
-   * @param {HTMLLinkElement} element the link element
+   * @param {HTMLLinkElement} linkElement the link element
    * @returns {string} the generated original link
    */
-  static getOrigLinkFromHTMLLinkElement(element) {
-    const aHref = new URL(element.href);
+  static getOrigLinkFromHTMLLinkElement(linkElement) {
+    const aHref = new URL(linkElement.href);
     const uParam = aHref.searchParams.get('u');
     let origLink;
     if (uParam) {
@@ -193,12 +188,13 @@ class FbLinkCleaner {
 
   /**
    * Sets up a row for the current link
-   * @param {string} href
+   * @param {HTMLLinkElement} linkElement
    */
-  setupRow(href) {
+  setupRow(linkElement) {
+    const href = FbLinkCleaner.getOrigLinkFromHTMLLinkElement(linkElement);
     const rowWrapper = FbLinkCleaner.newDiv('rowwrapper df jcsb');
     const linkWrapper = FbLinkCleaner.newDiv('lnkwrapper df');
-    linkWrapper.appendChild(FbLinkCleaner.createLinkEl(href));
+    linkWrapper.appendChild(FbLinkCleaner.createLinkEl(href, linkElement.innerText));
     const buttonsWrapper = FbLinkCleaner.newDiv('btnwrapper');
     const copyButton = FbLinkCleaner.newButton('btn', 'Copy to clipboard', 'COPY', FbLinkCleaner.getCopyLinkFn()
       .bind({
@@ -321,12 +317,13 @@ class FbLinkCleaner {
   /**
    * Creates an A element with the href as link
    * @param {string} href href for the A element
+   * @param {string} innerText innerText for the A element
    * @returns {HTMLAnchorElement} the created A element
    */
-  static createLinkEl(href) {
+  static createLinkEl(href, innerText) {
     const link = document.createElement('a');
     link.href = href;
-    link.innerText = href;
+    link.innerText = innerText || href;
     link.className = 'lnk';
     link.target = '_blank';
     return link;
